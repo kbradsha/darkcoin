@@ -468,7 +468,7 @@ void CMasternodeMan::RelayMasternodeEntryPing(const CTxIn vin, const std::vector
         pnode->PushMessage("dseep", vin, vchSig, nNow, stop);
 }
 
-void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
+void inline CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
 
     if(fLiteMode) return; //disable all Darksend/Masternode related functionality

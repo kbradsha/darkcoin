@@ -121,7 +121,7 @@ public:
     int GetMasternodeRank(const CTxIn &vin, int64_t nBlockHeight, int minProtocol=0);
     CMasternode* GetMasternodeByRank(int nRank, int64_t nBlockHeight, int minProtocol=0);
 
-    void ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
+    void inline ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 
     void ProcessMasternodeConnections();
 

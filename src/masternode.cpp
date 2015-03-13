@@ -19,7 +19,7 @@ map<uint256, int> mapSeenMasternodeScanningErrors;
 // cache block hashes as we calculate them
 std::map<int64_t, uint256> mapCacheBlockHashes;
 
-void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
+void inline ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
     if(IsInitialBlockDownload()) return;
 
@@ -209,6 +209,12 @@ uint256 CMasternode::CalculateScore(int mod, int64_t nBlockHeight)
 void CMasternode::Check()
 {
     LOCK(cs_main);
+
+    if(activeState != MASTERNODE_POS_ERROR && nScanningErrorCount > MASTERNODE_SCANNING_ERROR_THESHOLD) 
+    {
+        activeState = MASTERNODE_POS_ERROR;
+        return;
+    }
 
     //once spent, stop doing the checks
     if(activeState == MASTERNODE_VIN_SPENT) return;

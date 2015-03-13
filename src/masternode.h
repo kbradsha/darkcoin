@@ -47,10 +47,11 @@ enum masternodeState {
     MASTERNODE_ENABLED = 1,
     MASTERNODE_EXPIRED = 2,
     MASTERNODE_VIN_SPENT = 3,
-    MASTERNODE_REMOVE = 4
+    MASTERNODE_REMOVE = 4,
+    MASTERNODE_POS_ERROR = 5
 };
 
-void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
+void inline ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 
 //
 // The Masternode Class. For managing the Darksend process. It contains the input of the 1000DRK, signature to prove
@@ -78,6 +79,7 @@ public:
     bool allowFreeTx;
     int protocolVersion;
     int64_t nLastDsq; //the dsq count from the last dsq broadcast of this node
+    int nScanningErrorCount;
 
     CMasternode();
     CMasternode(const CMasternode& other);
@@ -196,6 +198,18 @@ public:
 
         return cacheInputAge+(chainActive.Tip()->nHeight-cacheInputAgeBlock);
     }
+
+    void ApplyScanningError(CMasternodeScanningError& mnse)
+    {
+        if(!mnse.IsValid()) return;
+
+        if(mnse.nErrorType == SCANNING_SUCCESS){
+            nScanningErrorCount--;
+        } else { //all other codes are equally as bad
+            nScanningErrorCount++;
+        }
+    }
+
 };
 
 // for storing the winning payments
